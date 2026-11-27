@@ -37,6 +37,11 @@ export function render(app) {
     <p><strong>The age pyramid</strong> is drawn from the 2020 census age-and-sex table,
     rounded to the nearest hundred thousand per band; band totals therefore differ
     trivially from the census headline.</p>
+    <p><strong>The population, births and income series</strong> are the annual figures
+    published in each year's Statistical Communiqué: year-end population (2020 aligned
+    to the census), registered births for the year, and per-capita disposable income
+    from the integrated household survey, which begins in 2013. The six-region table on
+    the Provinces page is a sum of that page's own provincial figures, nothing more.</p>
 
     <div class="note">China in Numbers is an independent presentation of public statistics.
     It is not affiliated with the National Bureau of Statistics or any government body.

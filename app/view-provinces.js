@@ -43,6 +43,22 @@ function rows() {
     </tr>`).join('');
 }
 
+function regionRows() {
+  const order = ['North', 'Northeast', 'East', 'South Central', 'Southwest', 'Northwest'];
+  return order.map((region) => {
+    const list = provinces.filter((p) => p.region === region);
+    const pop = list.reduce((s, p) => s + p.population, 0);
+    const gdp = list.reduce((s, p) => s + p.gdp2024, 0);
+    return `<tr>
+      <td><strong>${region}</strong></td>
+      <td class="num">${list.length}</td>
+      <td class="num">${fmt(pop / 1e6, 1)}</td>
+      <td class="num">${fmt(gdp, 1)}</td>
+      <td class="num">${fmt((gdp / nationalGdp2024) * 100, 1)}%</td>
+    </tr>`;
+  }).join('');
+}
+
 export function render(app) {
   app.innerHTML = `
     <h1>The 31 provinces</h1>
@@ -64,6 +80,17 @@ export function render(app) {
     <div class="note">Guangdong's 126.0 million residents make it more populous than Japan.
     At the other end, Tibet's 3.6 million people live in an area of 1.2 million km² — three people
     per square kilometre. Shanghai is the most urban division (89.3% urban); Tibet the least (37.4%).</div>
+
+    <h2>The six regions at a glance</h2>
+    <p>The table above, rolled up into the NBS's six conventional regions. The east coast —
+    seven divisions including Shanghai, Jiangsu and Zhejiang — holds 30% of the
+    people and produces nearly two-fifths of the output.</p>
+    <div class="table-wrap">
+      <table class="data">
+        <thead><tr><th>Region</th><th class="num">Divisions</th><th class="num">Population 2020, m</th><th class="num">GDP 2024, ¥ bn</th><th class="num">Share of GDP</th></tr></thead>
+        <tbody>${regionRows()}</tbody>
+      </table>
+    </div>
     <p class="source" style="color:var(--ink-soft);font-size:12.5px">Sources: Seventh National Population Census (2020); NBS provincial GDP 2024 (revised); NBS urbanisation estimates (2022).</p>`;
 
   const tbody = app.querySelector('#tbody');

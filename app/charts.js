@@ -68,6 +68,22 @@ export function lineChart(canvas, points, options = {}) {
   ctx.textAlign = 'right'; ctx.fillStyle = INK;
   ctx.font = 'bold 12.5px system-ui, sans-serif';
   ctx.fillText(`${fmt(last[1], options.yDigits || 0)}${options.unit || ''}`, X(last[0]), Y(last[1]) - 9);
+
+  // Optional callouts for named points: options.marks = [{x, label, dy}]
+  // (dy offsets the label from the point, negative above). A ringed dot marks
+  // the point so the label's subject is unambiguous in a screenshot.
+  for (const mark of options.marks || []) {
+    const p = points.find((q) => q[0] === mark.x);
+    if (!p) continue;
+    const cx = Math.min(Math.max(X(p[0]), padL + 34), width - padR - 34);
+    ctx.beginPath(); ctx.arc(X(p[0]), Y(p[1]), 4.2, 0, Math.PI * 2);
+    ctx.fillStyle = '#fff'; ctx.fill();
+    ctx.beginPath(); ctx.arc(X(p[0]), Y(p[1]), 4.2, 0, Math.PI * 2);
+    ctx.strokeStyle = color; ctx.lineWidth = 2.2; ctx.stroke();
+    ctx.fillStyle = INK; ctx.textAlign = 'center';
+    ctx.font = 'bold 11.5px system-ui, sans-serif';
+    ctx.fillText(mark.label, cx, Y(p[1]) + (mark.dy ?? -12));
+  }
 }
 
 // Vertical bars for [label, value] rows. options: {color, unit, digits}
@@ -142,12 +158,15 @@ export function donut(canvas, parts, options = {}) {
 }
 
 // Population pyramid for rows of [band, male, female], youngest first.
+// A centre line and a millions scale along the bottom give the bars a measure.
 export function pyramid(canvas, rows) {
   const rowH = 19;
-  const { ctx, width } = setup(canvas, rows.length * rowH + 24);
+  const { ctx, width } = setup(canvas, rows.length * rowH + 44);
   const mid = width / 2;
   const max = Math.max(...rows.flatMap((r) => [r[1], r[2]])) * 1.08;
   const scale = (mid - 56) / max;
+  ctx.strokeStyle = GRID; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(mid, 0); ctx.lineTo(mid, rows.length * rowH + 4); ctx.stroke();
   ctx.textAlign = 'center';
   rows.forEach((r, i) => {
     const y = i * rowH + 2;
@@ -158,7 +177,14 @@ export function pyramid(canvas, rows) {
     ctx.fillStyle = INK; ctx.font = '11px system-ui, sans-serif';
     ctx.fillText(r[0], mid, y + rowH - 6);
   });
-  ctx.fillStyle = SOFT; ctx.font = '12px system-ui, sans-serif';
-  ctx.textAlign = 'left'; ctx.fillText('Male', 6, rows.length * rowH + 16);
-  ctx.textAlign = 'right'; ctx.fillText('Female', width - 6, rows.length * rowH + 16);
+  ctx.fillStyle = SOFT; ctx.font = '11px system-ui, sans-serif';
+  for (const v of [20, 40, 60]) {
+    if (v > max) continue;
+    ctx.fillText(String(v), mid - v * scale, rows.length * rowH + 15);
+    ctx.fillText(String(v), mid + v * scale, rows.length * rowH + 15);
+  }
+  ctx.fillText('0', mid, rows.length * rowH + 15);
+  ctx.font = '12px system-ui, sans-serif';
+  ctx.textAlign = 'left'; ctx.fillText('Male · millions', 6, rows.length * rowH + 34);
+  ctx.textAlign = 'right'; ctx.fillText('Female · millions', width - 6, rows.length * rowH + 34);
 }

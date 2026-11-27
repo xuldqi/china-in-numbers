@@ -2,8 +2,8 @@
 // move to the cities and the lengthening of lives — plus the vital statistics
 // of the most recent year.
 
-import { pyramid2020, ageStructure2020, urbanisation, lifeExpectancy, headline } from './data-national.js';
-import { pyramid, hbarChart, lineChart } from './charts.js';
+import { pyramid2020, ageStructure2020, urbanisation, lifeExpectancy, headline, populationTotal, births } from './data-national.js';
+import { pyramid, hbarChart, lineChart, barChart } from './charts.js';
 
 export function render(app) {
   const ageRows = ageStructure2020.map((a) => [`Age ${a.band}`, a.pct]);
@@ -12,6 +12,15 @@ export function render(app) {
     <p class="lede">The seventh national census counted 1,411.8 million people on the mainland
     on 1 November 2020. It found a country that is older, far more urban and better educated
     than the one counted in 2010 — and, since 2022, a population that has begun to shrink.</p>
+
+    <div class="card">
+      <h3>A peak, then a turn: total population since 2000</h3>
+      <p class="card-sub">Millions at each year end. Growth slowed through the 2010s, the total peaked
+      at 1,412.6 million at the end of 2021, and it has fallen three years in a row since —
+      by 1.39 million in 2024 alone, as deaths (10.93m) outran births (9.54m).</p>
+      <canvas id="poptotal"></canvas>
+      <p class="source">Source: NBS annual population estimates; 2020 aligned to the census.</p>
+    </div>
 
     <div class="card">
       <h3>The population pyramid, 2020</h3>
@@ -43,6 +52,15 @@ export function render(app) {
       <p class="source">Source: NBS annual population estimates.</p>
     </div>
 
+    <div class="card">
+      <h3>Births, 2016-2024</h3>
+      <p class="card-sub">Millions of babies born each year. The universal two-child policy made
+      2016 the recent peak; births then halved in seven years, before a small rise in 2024,
+      a dragon year — traditionally a popular one to be born in.</p>
+      <canvas id="births"></canvas>
+      <p class="source">Source: Statistical Communiqués 2016-2024.</p>
+    </div>
+
     <h2>The census in facts</h2>
     <div class="card">
       <ul class="facts">
@@ -58,8 +76,13 @@ export function render(app) {
       <p class="source">Sources: 2020 census communiqué; Statistical Communiqué 2024; Ministry of Civil Affairs marriage statistics.</p>
     </div>`;
 
+  lineChart(app.querySelector('#poptotal'), populationTotal, {
+    color: '#17233b', yDigits: 0, yMin: 1200,
+    marks: [{ x: 2021, label: 'Peak: 1,412.6m, end of 2021', dy: -12 }],
+  });
   pyramid(app.querySelector('#pyramid'), pyramid2020);
   hbarChart(app.querySelector('#ages'), ageRows, { color: '#c9920e', digits: 2, unit: '%' });
   lineChart(app.querySelector('#life'), lifeExpectancy, { color: '#2e7d4f', unit: '', yDigits: 0, height: 210 });
   lineChart(app.querySelector('#urban'), urbanisation, { color: '#2456a6', unit: '%', yDigits: 0 });
+  barChart(app.querySelector('#births'), births, { color: '#b3372c', digits: 2, unit: 'm' });
 }

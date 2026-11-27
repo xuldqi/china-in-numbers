@@ -1,9 +1,9 @@
 // Economy: where output is produced (provinces ranked by GDP), how the sector
 // mix has changed since 2000, and the 2024 economy as a fact sheet.
 
-import { sectorShares, economyFacts } from './data-national.js';
+import { sectorShares, economyFacts, disposableIncome } from './data-national.js';
 import { provinces, nationalGdp2024 } from './data-provinces.js';
-import { hbarChart } from './charts.js';
+import { hbarChart, lineChart } from './charts.js';
 
 export function render(app) {
   const top = [...provinces].sort((a, b) => b.gdp2024 - a.gdp2024).slice(0, 12);
@@ -46,9 +46,22 @@ export function render(app) {
       <p class="source">Source: Statistical Communiqué of the People's Republic of China on National Economic and Social Development, 2024.</p>
     </div>
 
+    <h2>What households actually take home</h2>
+    <p>Output is only half the story. Per-capita disposable income — wages, business and
+    property income and transfers, after tax — has more than doubled since the integrated
+    household survey began in 2013, reaching ¥41,314 in 2024, though its growth has slowed
+    from near 9% a year in the mid-2010s to 5.3%.</p>
+    <div class="card">
+      <h3>Per-capita disposable income, 2013-2024</h3>
+      <p class="card-sub">Yuan per person per year, all households, urban and rural combined.</p>
+      <canvas id="income"></canvas>
+      <p class="source">Source: NBS household survey, Statistical Communiqués 2013-2024.</p>
+    </div>
+
     <div class="note">Provincial GDP figures are the revised 2024 values. Provincial shares of the
     national total are computed against the revised national GDP of ¥${nationalGdp2024.toLocaleString('en-US')} billion;
     because of statistical discrepancy the provincial figures do not sum exactly to the national one.</div>`;
 
   hbarChart(app.querySelector('#prov-gdp'), topRows, { color: '#2456a6', digits: 0, unit: '' });
+  lineChart(app.querySelector('#income'), disposableIncome, { color: '#2e7d4f', yDigits: 0 });
 }

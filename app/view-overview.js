@@ -63,7 +63,13 @@ export function render(app) {
       ${kpi('Provinces', '126.0', 'million in Guangdong', 'All 31 provinces in one searchable, sortable table → <a href="#/provinces">Provinces</a>')}
     </div>`;
 
-  lineChart(app.querySelector('#growth'), gdpGrowth, { unit: '%', color: '#b3372c', yDigits: 0 });
+  lineChart(app.querySelector('#growth'), gdpGrowth, {
+    unit: '%', color: '#b3372c', yDigits: 0,
+    marks: [
+      { x: 2007, label: 'Peak: 14.2%', dy: -12 },
+      { x: 2020, label: 'Pandemic: 2.2%', dy: 17 },
+    ],
+  });
   barChart(app.querySelector('#level'), gdpLevel, { color: '#2456a6', digits: 0 });
   donut(app.querySelector('#sectors'), [
     { label: 'Primary', value: s2024.primary, color: '#2e7d4f' },

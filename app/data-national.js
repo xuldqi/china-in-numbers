@@ -38,9 +38,34 @@ export const gdpLevel = [
 // Shares of GDP by sector, percent (primary / secondary / tertiary).
 export const sectorShares = [
   { year: 2000, primary: 14.7, secondary: 45.9, tertiary: 39.4 },
+  { year: 2005, primary: 12.1, secondary: 47.4, tertiary: 40.5 },
   { year: 2010, primary: 9.3, secondary: 46.5, tertiary: 44.2 },
   { year: 2020, primary: 7.7, secondary: 37.8, tertiary: 54.5 },
   { year: 2024, primary: 6.8, secondary: 36.5, tertiary: 56.7 },
+];
+
+// Total population at year end, millions, selected years. The series rises to
+// a peak of 1,412.6 million at the end of 2021 and falls every year after.
+export const populationTotal = [
+  [2000, 1267.4], [2005, 1307.6], [2010, 1340.9], [2015, 1374.6],
+  [2019, 1400.1], [2020, 1411.8], [2021, 1412.6], [2022, 1411.8],
+  [2023, 1409.7], [2024, 1408.3],
+];
+
+// Births per year, millions, 2016-2024. The first year of the universal
+// two-child policy (2016) was the recent peak; births halved by 2023 and
+// ticked up in the dragon year 2024.
+export const births = [
+  [2016, 17.86], [2017, 17.23], [2018, 15.23], [2019, 14.65],
+  [2020, 12.00], [2021, 10.62], [2022, 9.56], [2023, 9.02], [2024, 9.54],
+];
+
+// Per-capita disposable income of households, yuan per year, 2013-2024 —
+// the integrated household survey series published in each year's communiqué.
+export const disposableIncome = [
+  [2013, 18311], [2014, 20167], [2015, 21966], [2016, 23821],
+  [2017, 25974], [2018, 28228], [2019, 30733], [2020, 32189],
+  [2021, 35128], [2022, 36883], [2023, 39218], [2024, 41314],
 ];
 
 // Urban share of the population, percent, selected years.
