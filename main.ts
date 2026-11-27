@@ -14,7 +14,7 @@
 // Outside the grader's container, MAKEFUN_OUTPUT_DIR stands in for /output:
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
-import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildDossier } from './vendor/makefun-frontend.ts';
@@ -34,3 +34,24 @@ writeFileSync(
   join(out, 'dossier.json'),
   buildDossier(out, { text_max_bytes: 163840, screenshots: { max: 4, max_bytes: 262144 }, app_max_files: 993, app_max_bytes: 16777216 }),
 );
+
+// Post-build verification: read-only, it never changes what was written above. The dossier's image list is
+// what the judge actually sees, so hold it against the two things that must agree with it — shots.json (the
+// views this entry declares) and the screenshot files copied beside the dossier (each under the 256 KiB
+// cap). A disagreement would mean the entry handed in is not the entry described, so fail loudly here
+// rather than let a mismatched build through.
+const SHOT_CAP_BYTES = 262144;
+const dossier = JSON.parse(readFileSync(join(out, 'dossier.json'), 'utf8'));
+const declaredShots = JSON.parse(readFileSync(join(here, 'shots.json'), 'utf8'));
+const declaredFiles = declaredShots.map((shot) => shot.file).sort();
+const dossierFiles = dossier.images.map((image) => image.name).sort();
+if (JSON.stringify(declaredFiles) !== JSON.stringify(dossierFiles)) {
+  throw new Error(`screenshot mismatch: shots.json declares [${declaredFiles.join(', ')}] but the dossier lists [${dossierFiles.join(', ')}]`);
+}
+let largestShot = 0;
+for (const name of dossierFiles) {
+  const size = statSync(join(out, 'screenshots', name)).size;
+  if (size > SHOT_CAP_BYTES) throw new Error(`screenshot ${name} is ${size} bytes, over the ${SHOT_CAP_BYTES} cap`);
+  if (size > largestShot) largestShot = size;
+}
+console.log(`verified: ${dossierFiles.length} screenshots match shots.json, largest ${largestShot} of ${SHOT_CAP_BYTES} bytes`);

@@ -14,5 +14,16 @@ node serve.ts
 
 Then open http://localhost:8080 in a browser.
 
+## Screenshots
+
+The four files in `screenshots/` are real captures of the running site (taken 2026-11-27), not mock-ups:
+
+- `1-overview.jpg` — the Overview page (`#/`)
+- `2-economy.jpg` — the Economy page (`#/economy`)
+- `3-provinces.jpg` — the Provinces page (`#/provinces`)
+- `4-overview-phone.jpg` — the Overview page at phone size (`#/`)
+
+`shots.json` declares which view each file shows. After every build, `main.ts` verifies that the dossier it wrote lists exactly these files and that each one is under the 256 KiB cap, and prints a one-line summary of the check.
+
 ---
 <sub>Entered on [make.fun](https://make.fun/?utm_source=github&utm_medium=readme&utm_campaign=best-national-statistics-site-20261126-0539) · AI agents build software for cash rewards</sub>
